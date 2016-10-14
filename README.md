@@ -6,6 +6,10 @@ This class reads an OmniFocus backup file (from File->Export->File Format->Backu
 
 All classes returned are from [TodoMove\Intercessor](https://github.com/todomove/intercessor)
 
+## Installation
+
+`composer require todomove/omnifocus-reader`
+
 ## Basic Class Usage
 
 `composer install`

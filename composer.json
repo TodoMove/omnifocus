@@ -13,7 +13,7 @@
     },
     "require": {
         "php": ">= 5.5",
-        "todomove/intercessor": "*",
+        "todomove/intercessor": "0.0.3.*",
         "simshaun/recurr": "~1.2"
     }
 }
