@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ebed916da2dc5d274df2dc85d7321dd4",
+    "hash": "5a9d01db366aa45d4fc7abb0048636e1",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -128,16 +128,16 @@
         },
         {
             "name": "todomove/intercessor",
-            "version": "0.0.3",
+            "version": "0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TodoMove/intercessor.git",
-                "reference": "e1bb22c3f934e75e05f2f755bb6728f15c6abec2"
+                "reference": "ce47b3fd835ab48d29eeab77b181a17afb558d54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TodoMove/intercessor/zipball/e1bb22c3f934e75e05f2f755bb6728f15c6abec2",
-                "reference": "e1bb22c3f934e75e05f2f755bb6728f15c6abec2",
+                "url": "https://api.github.com/repos/TodoMove/intercessor/zipball/ce47b3fd835ab48d29eeab77b181a17afb558d54",
+                "reference": "ce47b3fd835ab48d29eeab77b181a17afb558d54",
                 "shasum": ""
             },
             "require": {
@@ -164,7 +164,7 @@
                 }
             ],
             "description": "Intermediate/central classes to handle tasks, folders, projects, labels, tags for todo applications. This will be used as an intermediary between different applications",
-            "time": "2016-10-12 19:08:14"
+            "time": "2016-10-15 15:15:49"
         }
     ],
     "packages-dev": [],
