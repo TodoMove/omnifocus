@@ -1,5 +1,5 @@
 <?php
-namespace TodoMove\Reader;
+namespace TodoMove\Service\Omnifocus;
 
 use TodoMove\Intercessor\Project;
 use TodoMove\Intercessor\ProjectFolder;
@@ -10,7 +10,7 @@ use TodoMove\Intercessor\Task;
 // TODO: This should extend/implement a class from TodoMove\Intercessor like Reader
 // This will read from Todoist/OmniFocus/Wunderlist/etc, but then how to handle the HTTP requests and passing in info (oauth credentials, filename, etc)?
 
-class OmnifocusReader
+class Reader
 {
     private $xml        = []; // Array from (array) simplexml_load_*
     private $of         = []; // OmniFocus store for XML versions of tasks/tags/projects/folders/etc

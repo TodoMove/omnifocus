@@ -8,7 +8,7 @@ All classes returned are from [TodoMove\Intercessor](https://github.com/todomove
 
 ## Installation
 
-`composer require todomove/omnifocus-reader`
+`composer require todomove/omnifocus`
 
 ## Basic Class Usage
 
@@ -16,7 +16,7 @@ All classes returned are from [TodoMove\Intercessor](https://github.com/todomove
 
 ```php
 require __DIR__ . '/vendor/autoload.php';
-use TodoMove\Reader\OmnifocusReader;
+use TodoMove\Service\Omnifocus\Reader;
  
 $omnifocus = OmnifocusReader::loadBackup($pathToZipFile);
 

@@ -7,7 +7,7 @@ if (empty($argv[1])) {
     die("Usage: php run.php [path to OmniFocus backup.zip]");
 }
 
-$reader = TodoMove\Reader\OmnifocusReader::loadBackup(
+$reader = TodoMove\Service\Omnifocus\Reader::loadBackup(
    $argv[1]
 );
 

@@ -1,5 +1,5 @@
 {
-    "name": "todomove/omnifocus-reader",
+    "name": "todomove/omnifocus",
     "description": "PHP Class to read an OmniFocus backup and convert it to Todomove\\Intercessor classes",
     "license": "MIT",
     "authors": [
@@ -9,7 +9,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "TodoMove\\Reader\\" : "./" }
+        "psr-4": { "TodoMove\\Service\\Omnifocus\\" : "./" }
     },
     "require": {
         "php": ">= 5.5",
