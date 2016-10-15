@@ -3,6 +3,7 @@ namespace TodoMove\Service\Omnifocus;
 
 use TodoMove\Intercessor\Project;
 use TodoMove\Intercessor\ProjectFolder;
+use TodoMove\Intercessor\Repeat;
 use TodoMove\Intercessor\Tag;
 use TodoMove\Intercessor\Tags;
 use TodoMove\Intercessor\Task;
@@ -242,6 +243,40 @@ class Reader
 
             if (!empty($xmlTask->note)) {
                 $task->notes(trim($this->buildNotes((array) $xmlTask->note)));
+            }
+
+            if (!empty((string)$xmlTask->{'repetition-rule'})) {
+                $repetition = (string) $xmlTask->{'repetition-rule'};
+                $rule = new \Recurr\Rule($repetition, new \DateTime(null, new \DateTimeZone('UTC')), null, 'UTC');
+                $rule->setCount(2);
+
+                preg_match('/FREQ=(?<freq>[A-Z]+)/', $repetition, $matches);
+                $freq = strtoupper($matches['freq']);
+
+                $repeat = new Repeat();
+                $repeat->interval($rule->getInterval());
+
+                // We only support basic options for the minute (not specific week days for example)
+                switch ($freq) {
+                    case 'DAILY':
+                        $type = Repeat::DAY;
+                        break;
+                    case 'WEEKLY':
+                        $type = Repeat::WEEK;
+                        break;
+                    case 'MONTHLY':
+                        $type = Repeat::MONTH;
+                        break;
+                    case 'YEARLY':
+                        $type = Repeat::YEAR;
+                        break;
+                    default:
+                        throw new \Exception('Repetition-rule frequency not supported: ' . $freq);
+                }
+
+                $repeat->type($type);
+
+                $task->repeat($repeat);
             }
 
             if (!empty($projectId)) {
