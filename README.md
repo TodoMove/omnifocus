@@ -34,4 +34,3 @@ $tasks = $reader->tasks(); // Array of `TodoMove\Intercessor\Task`
 ## Notes
 
 * The OmniFocus backup process (File->Export->File Format->Backup Document(OmniFocus)) produces a .zip file with a `contents.xml` which lists all of your folders, projects, contexts and tasks.
-* Currently this doesn't support repeat intervals, as Intercessor doesn't yet.  This is waiting on [ashleyhindle/uncouth](https://github.com/ashleyhindle/uncouth) 
