@@ -11,7 +11,7 @@ use TodoMove\Intercessor\Service\AbstractReader;
 
 class Reader extends AbstractReader
 {
-    private $xml        = []; // Array from (array) simplexml_load_*
+    private $xml = []; // Array from (array) simplexml_load_*
     private $idMap = [ // Map of OmniFocus ids to Intercessor ids.  Key is omnifocus id
         'tags' => [],
         'projects' => [],
