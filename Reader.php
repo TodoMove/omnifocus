@@ -32,6 +32,8 @@ class Reader extends AbstractReader
         $this->parseFolders(); // Folders before projects, as we attach the projects to the folders
         $this->parseProjects(); // This attaches projects to folders
         $this->parseTasks(); // This attaches tasks to projects
+
+        $this->xml = [];
     }
 
     /**
@@ -282,7 +284,7 @@ class Reader extends AbstractReader
     }
 
     /**
-     * OmniFocus backup from File->Export->File Format->Backup Documents (Omnifocus).
+     * OmniFocus backup .zip from inside the backup: File->Export->File Format->Backup Documents (Omnifocus).
      * ~/Downloads/OmniFocus.ofocus-backup/00000000000000=fQ_pq1_r7Jz+xxxxx-xxxxx.zip
      *
      * @param string $filename
