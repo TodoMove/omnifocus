@@ -251,16 +251,16 @@ class Reader extends AbstractReader
     public static function loadXML($filename = 'contents.xml')
     {
         if (empty($filename)) {
-            Throw new InvalidArgumentException('Filename is empty');
+            Throw new \InvalidArgumentException('Filename is empty');
         }
 
         if (!is_readable($filename)) {
-            Throw new InvalidArgumentException('File is not readable: ' . $filename);
+            Throw new \InvalidArgumentException('File is not readable: ' . $filename);
         }
 
         $xml = simplexml_load_file($filename);
         if ($xml === false) {
-            Throw new InvalidArgumentException('File is not XML: ' . $filename);
+            Throw new \InvalidArgumentException('File is not XML: ' . $filename);
         }
 
         return new static((array)$xml);
@@ -286,33 +286,33 @@ class Reader extends AbstractReader
      * ~/Downloads/OmniFocus.ofocus-backup/00000000000000=fQ_pq1_r7Jz+xxxxx-xxxxx.zip
      *
      * @param string $filename
-     * @throws Exception
+     * @throws \Exception
      *
      * @returns OmnifocusBackupReader
      */
     public static function loadBackup($filename = 'OmniFocus.zip')
     {
         if (empty($filename)) {
-            Throw new InvalidArgumentException('Filename is empty');
+            Throw new \InvalidArgumentException('Filename is empty');
         }
 
         if (!is_readable($filename)) {
-            Throw new InvalidArgumentException('File is not readable: ' . $filename);
+            Throw new \InvalidArgumentException('File is not readable: ' . $filename);
         }
 
         if (! class_exists('ZipArchive')) {
-            Throw new Exception('ZipArchive is not installed');
+            Throw new \Exception('ZipArchive is not installed');
         }
 
         $zip = new \ZipArchive;
         if ($zip->open($filename) === TRUE) {
             $xmlString = $zip->getFromName('contents.xml');
             if (empty($xmlString)) {
-                Throw new LogicException('This isn\'t a valid OmniFocus backup .zip file.  It is missing contents.xml');
+                Throw new \LogicException('This isn\'t a valid OmniFocus backup .zip file.  It is missing contents.xml');
             }
             $zip->close();
         } else {
-            Throw new Exception('Failed to open ZipArchive: ' . $filename);
+            Throw new \Exception('Failed to open ZipArchive: ' . $filename);
         }
 
         return static::loadString($xmlString);
