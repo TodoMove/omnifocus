@@ -7,18 +7,17 @@ use TodoMove\Intercessor\Repeat;
 use TodoMove\Intercessor\Tag;
 use TodoMove\Intercessor\Tags;
 use TodoMove\Intercessor\Task;
+use TodoMove\Intercessor\Service\AbstractReader;
 
-// TODO: This should extend/implement a class from TodoMove\Intercessor like Reader
-// This will read from Todoist/OmniFocus/Wunderlist/etc, but then how to handle the HTTP requests and passing in info (oauth credentials, filename, etc)?
-
-class Reader
+class Reader extends AbstractReader
 {
     private $xml        = []; // Array from (array) simplexml_load_*
-    private $of         = []; // OmniFocus store for XML versions of tasks/tags/projects/folders/etc
-    private $tags       = []; // key = tagid
-    private $folders    = []; // key = folderid
-    private $projects   = []; // key = projectid
-    private $tasks      = []; // key = taskid (you can get a group of tasks from projects, so no need to group them by projectid
+    private $idMap = [ // Map of OmniFocus ids to Intercessor ids.  Key is omnifocus id
+        'tags' => [],
+        'projects' => [],
+        'folders' => [],
+        'tasks' => [],
+    ];
 
     /**
      * OmnifocusReader constructor.
@@ -36,91 +35,18 @@ class Reader
     }
 
     /**
-     * @return Tag[]
-     */
-    public function tags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param $contextId - contextId from OmniFocus's XML
-     *
-     * @return Tag
-     */
-    public function tag($contextId)
-    {
-        return $this->tags[$contextId];
-    }
-
-    /**
-     * @return Task[]
-     */
-    public function tasks()
-    {
-        return $this->tasks;
-    }
-
-    /**
-     * @param $taskId - taskId from OmniFocus's XML
-     *
-     * @return Task
-     */
-    public function task($taskId)
-    {
-        return $this->tasks[$taskId];
-    }
-
-    /**
-     * @return ProjectFolder[]
-     */
-    public function folders()
-    {
-        return $this->folders;
-    }
-
-    /**
-     * @param $folderId
-     *
-     * @return ProjectFolder
-     */
-    public function folder($folderId)
-    {
-        return $this->folders[$folderId];
-    }
-
-    /**
-     * @return Project[]
-     */
-    public function projects()
-    {
-        return $this->projects;
-    }
-
-    /**
-     * @param $projectId
-     *
-     * @return Project
-     */
-    public function project($projectId)
-    {
-        return $this->projects[$projectId];
-    }
-
-    /**
      * @return $this
      */
     public function parseContexts()
     {
-        $this->of['contexts'] = [];
         $this->tags = [];
 
         foreach ($this->xml['context'] as $context) {
             $contextId = (string)$context->attributes()['id'];
-            $this->of['contexts'][$contextId] = $context;
 
             $tag = new Tag((string) $context->name);
-            $this->tags[$contextId] = $tag;
+            $this->idMap['tags'][$contextId] = $tag->id();
+            $this->tags[$tag->id()] = $tag;
         }
 
         return $this;
@@ -131,7 +57,6 @@ class Reader
      */
     protected function parseProjects()
     {
-        $this->of['contexts'] = [];
         $this->projects = [];
 
         // Get tasks, that are actually projects, that are _not_ completed
@@ -151,7 +76,7 @@ class Reader
             if ($xmlProject->context) {
                 $contextId = (string) $xmlProject->context->attributes()['idref'];
                 if (!empty($contextId)) {
-                    $projectTags->add($this->tag($contextId));
+                    $projectTags->add($this->tag($this->idMap['tags'][$contextId]));
                 }
             }
 
@@ -159,8 +84,9 @@ class Reader
             $project->status($status);
             $project->tags($projectTags);
 
-            $this->projects[$projectId] = $project;
-            $this->folder($folderId)->project($project);
+            $this->projects[$project->id()] = $project;
+            $this->idMap['projects'][$projectId] = $project->id();
+            $this->folder($this->idMap['folders'][$folderId])->project($project);
         }
 
         return $this;
@@ -171,7 +97,6 @@ class Reader
      */
     public function parseFolders()
     {
-        $this->of['folders'] = [];
         $this->folders = [];
 
         foreach ($this->xml['folder'] as $xmlFolder) {
@@ -181,7 +106,9 @@ class Reader
 
             $folder = new ProjectFolder((string) $xmlFolder->name);
             $folderId = (string)$xmlFolder->attributes()['id'];
-            $this->folders[$folderId] = $folder;
+            $this->idMap['folders'][$folderId] = $folder->id();
+
+            $this->folders[$this->idMap['folders'][$folderId]] = $folder;
         }
 
         foreach ($this->xml['folder'] as $xmlFolder) {
@@ -191,11 +118,12 @@ class Reader
 
             if (array_key_exists('folder', $xmlFolder)) { // It is a child and has a parent
                 $parentFolderId = (string) $xmlFolder->folder->attributes()['idref'];
+                $folderId = (string)$xmlFolder->attributes()['id'];
 
-                $folder = $this->folders[(string)$xmlFolder->attributes()['id']];
-                $folder->parent($this->folders[$parentFolderId]);
+                $folder = $this->folders[$this->idMap['folders'][$folderId]];
+                $folder->parent($this->folders[$this->idMap['folders'][$parentFolderId]]);
 
-                $this->folders[$parentFolderId]->child($folder);
+                $this->folders[$this->idMap['folders'][$parentFolderId]]->child($folder);
             }
         }
 
@@ -204,10 +132,10 @@ class Reader
 
     /**
      * @return $this
+     * @throws \Exception
      */
     public function parseTasks()
     {
-        $this->of['tasks'] = [];
         $this->tasks = [];
 
         // Only return tasks that aren't projects, and aren't completed
@@ -224,7 +152,7 @@ class Reader
             if (property_exists($xmlTask, 'context')) {
                 $contextId = (string)$xmlTask->context->attributes()['idref'];
                 if (!empty($contextId)) {
-                    $taskTags->add($this->tag($contextId));
+                    $taskTags->add($this->tag($this->idMap['tags'][$contextId]));
                 }
             }
 
@@ -232,6 +160,8 @@ class Reader
                 ->created(new \DateTime((string)$xmlTask->added))
                 ->flagged((bool) $xmlTask->flagged)
                 ->tags($taskTags);
+
+            $this->idMap['tasks'][$taskId] = $task->id();
 
             if (!empty((string) $xmlTask->start)) {
                 $task->defer(new \DateTime((string) $xmlTask->start));
@@ -280,11 +210,11 @@ class Reader
             }
 
             if (!empty($projectId)) {
-                $task->project($this->project($projectId));
-                $this->project($projectId)->task($task);
+                $task->project($this->project($this->idMap['projects'][$projectId]));
+                $this->project($this->idMap['projects'][$projectId])->task($task);
             }
 
-            $this->tasks[$taskId] = $task;
+            $this->tasks[$task->id()] = $task;
         }
 
         return $this;
