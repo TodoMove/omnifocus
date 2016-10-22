@@ -74,16 +74,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf"
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/088c04e2f261c33bed6ca5245491cfca69195ccf",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/c0125896dbb151380ab47e96c621741e79623beb",
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb",
                 "shasum": ""
             },
             "require": {
@@ -118,7 +118,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2016-04-03 06:00:07"
+            "time": "2016-10-17 15:23:22"
         },
         {
             "name": "ramsey/uuid",
@@ -256,16 +256,16 @@
         },
         {
             "name": "todomove/intercessor",
-            "version": "0.1.1",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TodoMove/intercessor.git",
-                "reference": "1029b7ef07c7eb37b0c3740a428e064d5b7f611b"
+                "reference": "3b36a866c60733518bca22a047a771d3f2aa0971"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TodoMove/intercessor/zipball/1029b7ef07c7eb37b0c3740a428e064d5b7f611b",
-                "reference": "1029b7ef07c7eb37b0c3740a428e064d5b7f611b",
+                "url": "https://api.github.com/repos/TodoMove/intercessor/zipball/3b36a866c60733518bca22a047a771d3f2aa0971",
+                "reference": "3b36a866c60733518bca22a047a771d3f2aa0971",
                 "shasum": ""
             },
             "require": {
@@ -275,6 +275,9 @@
             "require-dev": {
                 "phpspec/phpspec": "~3.1",
                 "phpunit/phpunit": "~5.6"
+            },
+            "suggest": {
+                "todomove/omnifocus": "Adds the ability to read OmniFocus backup files"
             },
             "type": "library",
             "autoload": {
@@ -293,7 +296,7 @@
                 }
             ],
             "description": "Intermediate/central classes to handle tasks, folders, projects, labels, tags for todo applications. This will be used as an intermediary between different applications",
-            "time": "2016-10-16 09:46:31"
+            "time": "2016-10-22 13:46:55"
         }
     ],
     "packages-dev": [],

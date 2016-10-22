@@ -26,6 +26,7 @@ class Reader extends AbstractReader
      */
     public function __construct($xml)
     {
+        $this->name('Omnifocus');
         $this->xml = is_array($xml) ? $xml : (array) $xml;
 
         $this->parseContexts(); // Must be first as Projects/Tasks utilise them
