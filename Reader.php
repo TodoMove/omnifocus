@@ -49,7 +49,7 @@ class Reader extends AbstractReader
 
             $tag = new Tag((string) $context->name);
             $this->idMap['tags'][$contextId] = $tag->id();
-            $this->tags[$tag->id()] = $tag;
+            $this->addTag($tag);
         }
 
         return $this;
@@ -87,7 +87,7 @@ class Reader extends AbstractReader
             $project->status($status);
             $project->tags($projectTags);
 
-            $this->projects[$project->id()] = $project;
+            $this->addProject($project);
             $this->idMap['projects'][$projectId] = $project->id();
             $this->folder($this->idMap['folders'][$folderId])->project($project);
         }
@@ -111,7 +111,7 @@ class Reader extends AbstractReader
             $folderId = (string)$xmlFolder->attributes()['id'];
             $this->idMap['folders'][$folderId] = $folder->id();
 
-            $this->folders[$this->idMap['folders'][$folderId]] = $folder;
+            $this->addFolder($folder);
         }
 
         foreach ($this->xml['folder'] as $xmlFolder) {
@@ -217,7 +217,7 @@ class Reader extends AbstractReader
                 $this->project($this->idMap['projects'][$projectId])->task($task);
             }
 
-            $this->tasks[$task->id()] = $task;
+            $this->addTask($task);
         }
 
         return $this;
