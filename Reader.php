@@ -122,10 +122,12 @@ class Reader extends AbstractReader
             }
 
 
-
             $this->addProject($project);
             $this->idMap['projects'][$projectId] = $project->id();
-            $this->folder($this->idMap['folders'][$folderId])->project($project);
+            if (!empty($folderId)) {
+                $this->folder($this->idMap['folders'][$folderId])->project($project);
+                $project->folder($this->folder($this->idMap['folders'][$folderId]));
+            }
         }
 
         return $this;

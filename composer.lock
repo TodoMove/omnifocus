@@ -256,16 +256,16 @@
         },
         {
             "name": "todomove/intercessor",
-            "version": "0.2.1",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TodoMove/intercessor.git",
-                "reference": "755e4e44938610ae97213a6fe89e9f4cf6bc32d0"
+                "reference": "18763ec1bea051969cb9ad0d482a30ab7e04dc58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TodoMove/intercessor/zipball/755e4e44938610ae97213a6fe89e9f4cf6bc32d0",
-                "reference": "755e4e44938610ae97213a6fe89e9f4cf6bc32d0",
+                "url": "https://api.github.com/repos/TodoMove/intercessor/zipball/18763ec1bea051969cb9ad0d482a30ab7e04dc58",
+                "reference": "18763ec1bea051969cb9ad0d482a30ab7e04dc58",
                 "shasum": ""
             },
             "require": {
@@ -296,7 +296,7 @@
                 }
             ],
             "description": "Intermediate/central classes to handle tasks, folders, projects, labels, tags for todo applications. This will be used as an intermediary between different applications",
-            "time": "2016-10-24 21:35:38"
+            "time": "2016-10-27 20:58:39"
         }
     ],
     "packages-dev": [],
