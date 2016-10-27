@@ -29,7 +29,7 @@ class Reader extends AbstractReader
         $this->name('Omnifocus');
         $this->xml = is_array($xml) ? $xml : (array) $xml;
 
-        $this->parseContexts(); // Must be first as Projects/Tasks utilise them
+        $this->parseTags(); // Must be first as Projects/Tasks utilise them
         $this->parseFolders(); // Folders before projects, as we attach the projects to the folders
         $this->parseProjects(); // This attaches projects to folders
         $this->parseTasks(); // This attaches tasks to projects
@@ -40,7 +40,7 @@ class Reader extends AbstractReader
     /**
      * @return $this
      */
-    public function parseContexts()
+    public function parseTags()
     {
         $this->tags = [];
 
@@ -87,6 +87,42 @@ class Reader extends AbstractReader
             $project->status($status);
             $project->tags($projectTags);
 
+            if (!empty((string)$xmlProject->{'repetition-rule'})) {
+                $repetition = (string) $xmlProject->{'repetition-rule'};
+                $rule = new \Recurr\Rule($repetition, new \DateTime(null, new \DateTimeZone('UTC')), null, 'UTC');
+                $rule->setCount(2);
+
+                preg_match('/FREQ=(?<freq>[A-Z]+)/', $repetition, $matches);
+                $freq = strtoupper($matches['freq']);
+
+                $repeat = new Repeat();
+                $repeat->interval($rule->getInterval());
+
+                // We only support basic options for the minute (not specific week days for example)
+                switch ($freq) {
+                    case 'DAILY':
+                        $type = Repeat::DAY;
+                        break;
+                    case 'WEEKLY':
+                        $type = Repeat::WEEK;
+                        break;
+                    case 'MONTHLY':
+                        $type = Repeat::MONTH;
+                        break;
+                    case 'YEARLY':
+                        $type = Repeat::YEAR;
+                        break;
+                    default:
+                        throw new \Exception('Repetition-rule frequency not supported: ' . $freq);
+                }
+
+                $repeat->type($type);
+
+                $project->repeat($repeat);
+            }
+
+
+
             $this->addProject($project);
             $this->idMap['projects'][$projectId] = $project->id();
             $this->folder($this->idMap['folders'][$folderId])->project($project);
@@ -123,10 +159,10 @@ class Reader extends AbstractReader
                 $parentFolderId = (string) $xmlFolder->folder->attributes()['idref'];
                 $folderId = (string)$xmlFolder->attributes()['id'];
 
-                $folder = $this->folders[$this->idMap['folders'][$folderId]];
-                $folder->parent($this->folders[$this->idMap['folders'][$parentFolderId]]);
+                $folder = $this->folder($this->idMap['folders'][$folderId]);
+                $folder->parent($this->folder($this->idMap['folders'][$parentFolderId]));
 
-                $this->folders[$this->idMap['folders'][$parentFolderId]]->child($folder);
+                $this->folder($this->idMap['folders'][$parentFolderId])->child($folder);
             }
         }
 
