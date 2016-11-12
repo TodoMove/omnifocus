@@ -1,6 +1,7 @@
 <?php
 namespace TodoMove\Service\Omnifocus;
 
+use Recurr\Exception;
 use TodoMove\Intercessor\Project;
 use TodoMove\Intercessor\ProjectFolder;
 use TodoMove\Intercessor\Repeat;
@@ -56,6 +57,8 @@ class Reader extends AbstractReader
     }
 
     /**
+     * @throws \Exception
+     *
      * @return $this
      */
     protected function parseProjects()
@@ -63,7 +66,7 @@ class Reader extends AbstractReader
         $this->projects = [];
 
         // Get tasks, that are actually projects, that are _not_ completed
-        $xmlProjectsFiltered = array_filter($this->xml['task'], function($var) {
+        $xmlProjectsFiltered = array_filter($this->xml['task'], function ($var) {
             return (! empty((array)$var->project) && empty((string)$var->completed));
         });
 
@@ -83,7 +86,7 @@ class Reader extends AbstractReader
                 }
             }
 
-            $project = new Project( (string) $xmlProject->name);
+            $project = new Project((string) $xmlProject->name);
             $project->status($status);
             $project->tags($projectTags);
 
@@ -180,7 +183,7 @@ class Reader extends AbstractReader
         $this->tasks = [];
 
         // Only return tasks that aren't projects, and aren't completed
-        $xmlTasksFiltered = array_filter($this->xml['task'], function($var) {
+        $xmlTasksFiltered = array_filter($this->xml['task'], function ($var) {
             return (empty((array)$var->project) && empty((string)$var->completed));
         });
 
@@ -292,16 +295,16 @@ class Reader extends AbstractReader
     public static function loadXML($filename = 'contents.xml')
     {
         if (empty($filename)) {
-            Throw new \InvalidArgumentException('Filename is empty');
+            throw new \InvalidArgumentException('Filename is empty');
         }
 
         if (!is_readable($filename)) {
-            Throw new \InvalidArgumentException('File is not readable: ' . $filename);
+            throw new \InvalidArgumentException('File is not readable: ' . $filename);
         }
 
         $xml = simplexml_load_file($filename);
         if ($xml === false) {
-            Throw new \InvalidArgumentException('File is not XML: ' . $filename);
+            throw new \InvalidArgumentException('File is not XML: ' . $filename);
         }
 
         return new static((array)$xml);
@@ -316,7 +319,7 @@ class Reader extends AbstractReader
     {
         $xml = simplexml_load_string($string);
         if ($xml === false) {
-            Throw new InvalidArgumentException('String is not valid XML: ' . $string);
+            throw new InvalidArgumentException('String is not valid XML: ' . $string);
         }
 
         return new static((array)$xml);
@@ -334,26 +337,26 @@ class Reader extends AbstractReader
     public static function loadBackup($filename = 'OmniFocus.zip')
     {
         if (empty($filename)) {
-            Throw new \InvalidArgumentException('Filename is empty');
+            throw new \InvalidArgumentException('Filename is empty');
         }
 
         if (!is_readable($filename)) {
-            Throw new \InvalidArgumentException('File is not readable: ' . $filename);
+            throw new \InvalidArgumentException('File is not readable: ' . $filename);
         }
 
         if (! class_exists('ZipArchive')) {
-            Throw new \Exception('ZipArchive is not installed');
+            throw new \Exception('ZipArchive is not installed');
         }
 
         $zip = new \ZipArchive;
-        if ($zip->open($filename) === TRUE) {
+        if ($zip->open($filename) === true) {
             $xmlString = $zip->getFromName('contents.xml');
             if (empty($xmlString)) {
-                Throw new \LogicException('This isn\'t a valid OmniFocus backup .zip file.  It is missing contents.xml');
+                throw new \LogicException('This isn\'t a valid OmniFocus backup .zip file. It is missing contents.xml');
             }
             $zip->close();
         } else {
-            Throw new \Exception('Failed to open ZipArchive: ' . $filename);
+            throw new \Exception('Failed to open ZipArchive: ' . $filename);
         }
 
         return static::loadString($xmlString);
